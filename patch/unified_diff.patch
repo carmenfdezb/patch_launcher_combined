@@ -1,0 +1,1014 @@
+--- /dev/null
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml
+@@ -0,0 +1,109 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++
++Item {
++    property var icons: []
++    property bool pressed
++
++    property int size: Theme.iconSizeLauncher
++    property int iconSize: size * 0.3
++
++    width: size
++    height: size
++
++   Grid {
++       columns: 3
++       rows: 3
++       spacing: Theme.paddingSmall
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 0
++           source: visible ? iconSource(icons[0]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 1
++           source: visible ? iconSource(icons[1]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 2
++           source: visible ? iconSource(icons[2]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 3
++           source: visible ? iconSource(icons[3]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 4
++           source: visible ? iconSource(icons[4]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 5
++           source: visible ? iconSource(icons[5]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 6
++           source: visible ? iconSource(icons[6]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 7
++           source: visible ? iconSource(icons[7]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++
++       Image {
++           width: iconSize
++           height: iconSize
++
++           visible: icons.length > 8
++           source: visible ? iconSource(icons[8]) : ""
++
++           smooth: !iconIsLink(source)
++       }
++   }
++}
+--- /dev/null
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml
+@@ -0,0 +1,48 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++
++Item {
++    property var icons: []
++    property bool pressed
++
++    property int size: Theme.iconSizeLauncher
++    property int iconSize: size * 0.8
++
++    width: size
++    height: size
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.right: parent.right
++        anchors.bottom: parent.bottom
++
++        visible: icons.length > 2
++        source: visible ? iconSource(icons[2]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.centerIn: parent
++
++        visible: icons.length > 1
++        source: visible ? iconSource(icons[1]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.left: parent.left
++        anchors.top: parent.top
++
++        visible: icons.length > 0
++        source: visible ? iconSource(icons[0]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++}
+--- /dev/null
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml
+@@ -0,0 +1,61 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++
++Item {
++    property var icons: []
++    property bool pressed
++
++    property int size: Theme.iconSizeLauncher
++    property int iconSize: size * 0.45
++
++    width: size
++    height: size
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.top: parent.top
++        anchors.right: parent.right
++
++        visible: icons.length > 1
++        source: visible ? iconSource(icons[1]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.top: parent.top
++        anchors.left: parent.left
++
++        visible: icons.length > 0
++        source: visible ? iconSource(icons[0]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.bottom: parent.bottom
++        anchors.left: parent.left
++
++        visible: icons.length > 2
++        source: visible ? iconSource(icons[2]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.bottom: parent.bottom
++        anchors.right: parent.right
++
++        visible: icons.length > 3
++        source: visible ? iconSource(icons[3]) : ""
++
++        smooth: !iconIsLink(source)
++    }
++}
+--- /dev/null
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml
+@@ -0,0 +1,127 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++import Sailfish.Lipstick 1.0
++import org.nemomobile.lipstick 0.1
++
++Item {
++    id: root
++
++    width: size
++    height: size
++
++    property var folder
++    property bool pressed
++
++    property string icon: folder ? folder.iconId : ""
++    property int size: Theme.iconSizeLauncher
++
++    property int index: parseInt(icon.substr(-2, 2)) - 1
++    property bool isFolder: folder.type == LauncherModel.Folder
++
++    Item {
++       anchors.centerIn: parent
++       width: root.size * 1.5
++       height: root.size * 1.5
++
++       layer.effect: pressEffectComponent
++       layer.enabled: root.isFolder && root.index > 15 && root.pressed
++
++       Loader {
++           id: loader
++           anchors.centerIn: parent
++           sourceComponent: !isFolder || index < 16 ? defaultFolderIcon : extraFolderIconPool[index - 16]
++       }
++    }
++
++    Component {
++        id: defaultFolderIcon
++        LauncherIcon {
++            icon: root.icon
++            pressed: root.pressed
++            size: root.size
++        }
++    }
++
++    function iconFolderItems(count) {
++        var icons = []
++        for (var i = 0; i < folder.itemCount && i < count; i++) {
++            icons.push(folder.get(i).iconId)
++        }
++        return icons
++    }
++
++    function iconIsLink(value) {
++        if (typeof(value) == "object") {
++            return false
++        }
++        return value.indexOf(':/') !== -1 || value.indexOf("data:") == 0
++    }
++
++    function iconSource(value) {
++        if (iconIsLink(value)) {
++            return value
++        } else if (value.indexOf('/') === 0) {
++            return 'file://' + value
++        } else {
++            return 'image://theme/' + value
++        }
++    }
++
++    property var extraFolderIconPool: [
++        folderIconGridComponent,
++        folderIconBigGridComponent,
++        folderIconCascadeComponent,
++        folderIconStackComponent
++    ]
++
++    Component {
++        id: folderIconGridComponent
++        FolderIconGrid {
++            icons: iconFolderItems(4)
++            size: root.size
++        }
++    }
++
++    Component {
++        id: folderIconBigGridComponent
++        FolderIconBigGrid {
++            icons: iconFolderItems(9)
++            size: root.size
++        }
++    }
++
++    Component {
++        id: folderIconCascadeComponent
++        FolderIconCascade {
++            icons: iconFolderItems(3)
++            size: root.size
++        }
++    }
++
++    Component {
++        id: folderIconStackComponent
++        FolderIconStack {
++            icons: iconFolderItems(4)
++            size: root.size
++        }
++    }
++
++    Component {
++        id: pressEffectComponent
++        ShaderEffect {
++            property variant source
++            property color color: Theme.rgba(Theme.highlightBackgroundColor, 0.4)
++            fragmentShader: "
++            uniform sampler2D source;
++            uniform highp vec4 color;
++            uniform lowp float qt_Opacity;
++            varying highp vec2 qt_TexCoord0;
++            void main(void)
++            {
++                highp vec4 pixelColor = texture2D(source, qt_TexCoord0);
++                gl_FragColor = vec4(mix(pixelColor.rgb/max(pixelColor.a, 0.00390625), color.rgb/max(color.a, 0.00390625), color.a) * pixelColor.a, pixelColor.a) * qt_Opacity;
++            }
++            "
++        }
++    }
++}
+--- /dev/null
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml
+@@ -0,0 +1,69 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++
++Item {
++    property var icons: []
++    property bool pressed
++
++    property int size: Theme.iconSizeLauncher
++    property int iconSize: size * 0.7
++
++    width: size
++    height: size
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.bottom: parent.bottom
++        anchors.left: parent.left
++
++        visible: icons.length > 3
++        source: visible ? iconSource(icons[3]) : ""
++
++        smooth: !iconIsLink(source)
++
++        rotation: 25
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.bottom: parent.bottom
++        anchors.right: parent.right
++
++        visible: icons.length > 2
++        source: visible ? iconSource(icons[2]) : ""
++
++        smooth: !iconIsLink(source)
++
++        rotation: -25
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.top: parent.top
++        anchors.right: parent.right
++
++        visible: icons.length > 1
++        source: visible ? iconSource(icons[1]) : ""
++
++        smooth: !iconIsLink(source)
++
++        rotation: -25
++    }
++
++    Image {
++        width: iconSize
++        height: iconSize
++        anchors.top: parent.top
++        anchors.left: parent.left
++
++        visible: icons.length > 0
++        source: visible ? iconSource(icons[0]) : ""
++
++        smooth: !iconIsLink(source)
++
++        rotation: 25
++    }
++}
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml
+@@ -18,12 +18,23 @@
+ 
+ SilicaListView {
+     id: launcherPager
++    
++    ConfigurationGroup {
++		id: launcherSettings
++        path: "/apps/lipstick-jolla-home-qt5/launcher"
++        property bool freeScroll: true
++        property bool useScroll: true
++        onFreeScrollChanged: launcher.manageDummyPages()
++    }
+ 
+     property bool launcherActive: Lipstick.compositor.launcherLayer.active
+     onLauncherActiveChanged: if (!launcherActive) { resetPosition(400) }
+ 
+     property bool editMode: launcher.launcherEditMode
+     onEditModeChanged: {
++		if (launcherSettings.freeScroll) {
++            return
++        }
+         if (editMode) {
+             snapMode = ListView.NoSnap
+             highlightRangeMode = ListView.NoHighlightRange
+@@ -33,13 +44,18 @@
+         }
+     }
+ 
++	VerticalScrollDecorator {
++        flickable: launcherPager
++        visible: launcherSettings.freeScroll && launcherSettings.useScroll && launcherPager.contentHeight > launcherPager.height
++    }
++
+     model: ListModel {}
+     delegate: Item {
+         width: launcherPager.width
+-        height: launcherPager.height
++        height: launcherSettings.freeScroll ? launcher.cellHeight : launcherPager.height
+     }
+-    snapMode: ListView.SnapOneItem
+-    highlightRangeMode: ListView.StrictlyEnforceRange
++    snapMode: launcherSettings.freeScroll ? ListView.NoSnap : ListView.SnapOneItem
++    highlightRangeMode: launcherSettings.freeScroll ? ListView.NoHighlightRange : ListView.StrictlyEnforceRange
+     cacheBuffer: height*model.count
+ 
+     // Match velocity with EdgeLayer transition's 300ms (0.3s below) duration
+@@ -154,8 +170,6 @@
+ 
+         LauncherGrid {
+             id: launcher
+-            property Item remorse
+-            property bool removeApplicationEnabled
+ 
+             launcherEditMode: removeApplicationEnabled && !openedChildFolder
+ 
+@@ -242,11 +256,13 @@
+             Component.onCompleted: manageDummyPages()
+             onContentHeightChanged: manageDummyPages()
+             onLauncherEditModeChanged: manageDummyPages()
++            onColumnsChanged: manageDummyPages()
++            onCountChanged: manageDummyPages()
+ 
+             function manageDummyPages() {
+                 if (launcherPager.height > 0) {
+                     // Create dummy pages to allow paging
+-                    var pageCount = Math.ceil(contentHeight/launcherPager.height)
++                    var pageCount = launcherSettings.freeScroll ? Math.ceil(count / columns) : Math.ceil(contentHeight/launcherPager.height)
+                     while (launcherPager.model.count < pageCount) {
+                         launcherPager.model.append({ "name": "dummy" })
+                     }
+@@ -261,20 +277,6 @@
+                 target: launcher.contentItem
+             }
+ 
+-            function removeApplication(desktopFile, title) {
+-                if (!remorse) {
+-                    remorse = remorseComponent.createObject(launcherPager)
+-                } else if (remorse.desktopFile !== "" && remorse.desktopFile !== desktopFile) {
+-                    remorse.removePackageByDesktopFile()
+-                    remorse.cancel()
+-                }
+-                remorse.desktopFile = desktopFile
+-
+-                //: Notification indicating that an application will be removed, %1 will be replaced by application name
+-                //% "Uninstalling %1"
+-                remorse.execute(qsTrId("lipstick-jolla-home-no-uninstalling").arg(title))
+-            }
+-
+             ConfigurationValue {
+                 id: developerModeEnabled
+                 defaultValue: false
+@@ -285,32 +287,6 @@
+                 target: Lipstick.compositor.launcherLayer
+                 property: "cellHeight"
+                 value: launcher.cellHeight
+-            }
+-
+-            Component {
+-                id: remorseComponent
+-
+-                RemorsePopup {
+-                    property string desktopFile
+-
+-                    function removePackageByDesktopFile() {
+-                        if (desktopFile !== "") {
+-                            installationHandler.call("removePackageByDesktopFile", desktopFile)
+-                            desktopFile = ""
+-                        }
+-                    }
+-
+-                    z: 100
+-                    onTriggered: removePackageByDesktopFile()
+-                    onCanceled: desktopFile = ""
+-
+-                    DBusInterface {
+-                        id: installationHandler
+-                        service: "org.sailfishos.installationhandler"
+-                        path: "/org/sailfishos/installationhandler"
+-                        iface: "org.sailfishos.installationhandler"
+-                    }
+-                }
+             }
+         }
+     }
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml
+@@ -12,39 +12,21 @@
+ import Sailfish.Lipstick 1.0
+ import com.jolla.lipstick 0.1
+ 
+-Rectangle {
++Dialog {
+     id: launcherFolder
++    _clickablePageIndicators: false
++    allowedOrientations: Lipstick.compositor.topmostWindowOrientation
++    property var launcherPager
+     property alias model: launcherGrid.model
+     property bool selectIcon
+     property Item iconSelector
+     property int visibleRowCount: launcherGrid.rows-2
+ 
+-    Connections {
+-        target: Desktop.instance.switcher
+-        onAppShowInProgressChanged: if (Desktop.instance.switcher.appShowInProgress) close()
+-    }
+-
+-    function close() {
++	function close(animate) {
+         launcherGrid.setEditMode(false)
+-        opacity = 0.0
+-        enabled = false
+-        destroy(450)
++        reject()
+     }
+ 
+-    z: 10
+-    opacity: 0.0
+-    Behavior on opacity { SmoothedAnimation { duration: 400; velocity: 1000 / duration } }
+-
+-    gradient: Gradient {
+-        GradientStop { position: 0.0; color: Theme.rgba(Theme.overlayBackgroundColor, 1.0) }
+-        GradientStop { position: 1.0; color: Theme.rgba(Theme.overlayBackgroundColor, Theme.opacityOverlay) }
+-    }
+-
+-    width: launcherPager.width
+-    height: launcherPager.height
+-
+-    Component.onCompleted: opacity = 1.0
+-
+     Connections {
+         target: Lipstick.compositor
+         onDisplayOff: launcherFolder.close()
+@@ -91,7 +73,7 @@
+                 } else if (selectIcon) {
+                     selectIcon = false
+                 } else if (!launcherGrid.launcherEditMode) {
+-                    launcherFolder.close()
++                    launcherFolder.close(true)
+                 }
+                 launcherGrid.setEditMode(false)
+             }
+@@ -100,11 +82,12 @@
+         Rectangle {
+             id: header
+             width: parent.width
+-            height: launcherGrid.cellHeight - Theme.fontSizeExtraSmall/2
++            height: launcherIcon.height + Theme.paddingLarge
+             gradient: Gradient {
+                 GradientStop { position: 0.0; color: Theme.rgba(Theme.primaryColor, 0.0) }
+                 GradientStop { position: 1.0; color: Theme.rgba(Theme.primaryColor, 0.15) }
+             }
++            opacity: 1 - footer.opacity
+ 
+             Image {
+                 anchors.horizontalCenter: parent.horizontalCenter
+@@ -112,22 +95,23 @@
+             }
+ 
+             MouseArea {
+-                id: icon
++                id: iconHeader
+                 objectName: "LauncherFolder_icon"
+-                width: launcherGrid.cellWidth
++                width: height
+                 height: parent.height
+-                x: launcherGrid.x // launcherGrid is centered in it's parent
+-                LauncherIcon {
+-                    y: (launcherGrid.cellHeight - height - Theme.fontSizeExtraSmall)/2
+-                    icon: model.iconId
+-                    anchors.horizontalCenter: parent.horizontalCenter
+-                    pressed: icon.pressed && icon.containsMouse
++                x: Theme.paddingMedium
++                FolderIconLoader {
++                    id: launcherIcon
++                    folder: model
++                    anchors.centerIn: parent
++                    pressed: iconHeader.pressed && iconHeader.containsMouse
+                     Text {
+                         font.pixelSize: Theme.fontSizeExtraLarge
+                         font.family: Theme.fontFamilyHeading
+                         color: Theme.lightPrimaryColor
+                         text: model.itemCount
+                         anchors.centerIn: parent
++                        visible: launcherIcon.index < 16
+                     }
+                 }
+                 onClicked: {
+@@ -145,7 +129,7 @@
+             TextField {
+                 id: titleEditor
+                 anchors {
+-                    left: icon.right
++                    left: iconHeader.right
+                     leftMargin: -Theme.paddingLarge
+                     right: parent.right
+                     verticalCenter: parent.verticalCenter
+@@ -179,8 +163,8 @@
+                 anchors {
+                     right: titleEditor.right
+                     rightMargin: Theme.horizontalPageMargin
+-                    top: titleEditor.bottom
+-                    topMargin: -Theme.paddingMedium
++                    bottom: parent.bottom
++                    bottomMargin: Theme.paddingMedium
+                 }
+                 font.pixelSize: Theme.fontSizeSmall
+                 color: Theme.highlightColor
+@@ -197,8 +181,8 @@
+             // Use a clipper item to clip slightly outside the GridView area
+             anchors.top: header.bottom
+             width: parent.width
+-            height: launcherGrid.height + Theme.fontSizeExtraSmall
+-            clip: true
++            height: launcherGrid.height
++            clip: launcherGrid.reorderItem ? false : true
+ 
+             LauncherGrid {
+                 id: launcherGrid
+@@ -213,8 +197,7 @@
+                 }
+ 
+                 gridManager.dragContainer: launcherFolder
+-                onItemLaunched: launcherFolder.close()
+-
++                
+                 NumberAnimation {
+                     id: contentYAnimation
+                     target: launcherGrid
+@@ -236,23 +219,24 @@
+                             } else if (selectIcon) {
+                                 selectIcon = false
+                             } else if (!launcherGrid.launcherEditMode) {
+-                                launcherFolder.close()
++                                launcherFolder.close(true)
+                             }
+                             launcherGrid.setEditMode(false)
+                         }
+                     }
+                 }
+ 
+-                VerticalScrollDecorator {}
++                VerticalScrollDecorator { anchors.rightMargin: -launcherGrid.x }
+ 
+                 y: Theme.fontSizeExtraSmall/2
+-                height: cellHeight * visibleRowCount
++                height: launcherFolder.height - header.height
+                 cacheBuffer: height
+                 displayMarginBeginning: Theme.fontSizeExtraSmall/2
+                 displayMarginEnd: Theme.fontSizeExtraSmall/2
+                 enabled: !titleEditor.activeFocus && !selectIcon
+                 Behavior on opacity { FadeAnimation { duration: 300 } }
+                 opacity: enabled ? 1.0 : (selectIcon ? 0.0 : Theme.opacityLow)
++                footer: Item { width: 1; height: Theme.paddingSmall}
+             }
+         }
+ 
+@@ -263,21 +247,19 @@
+                 if (item) {
+                     // The odd launcherGrid.reorderItem.y line below is to force revaluation of this binding
+                     launcherGrid.reorderItem.y
+-                    var itemY = launcherGrid.mapFromItem(item, 0, 0).y
+-                    if (itemY + item.height/2 > launcherGrid.height)
++                    var itemY = header.mapFromItem(item, 0, 0).y
++                    if (itemY < header.height / 2)
+                         return true
+                 }
+                 return false
+             }
+             property bool shown: (launcherGrid.launcherEditMode && launcherGrid.reorderItem ||
+                                   model.itemCount > launcherGrid.columns * visibleRowCount) && !selectIcon
+-            height: launcherGrid.cellHeight - Theme.fontSizeExtraSmall/2
++            height: header.height
+             width: parent.width
+-            y: parent.height - (shown ? height : 0)
+-            Behavior on y { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
++            y: 0
+             opacity: launcherGrid.launcherEditMode && launcherGrid.reorderItem ?
+-                         (draggedIntoFooter ? 1.0 : Theme.opacityHigh) :
+-                         (model.itemCount > launcherGrid.columns * visibleRowCount && shown ? Theme.opacityHigh : 0.0)
++                         (draggedIntoFooter ? 1.0 : 0.8) : 0.0
+             Behavior on opacity { FadeAnimation {} }
+             color: Theme.highlightDimmerColor
+             gradient: Gradient {
+@@ -328,18 +310,19 @@
+                     id: folderIconGrid
+                     columns: Math.floor(launcherGrid.width/launcherGrid.cellWidth)
+                     Repeater {
+-                        model: 16
++                        model: 20
+                         delegate: MouseArea {
+                             id: folderIcon
+-                            objectName: "LauncherFolder_folderIcon"
+                             width: launcherGrid.cellWidth
+                             height: launcherGrid.cellHeight
+-                            LauncherIcon {
++                            FolderIconLoader {
+                                 id: folderLauncherIcon
+                                 anchors {
+                                     centerIn: parent
+                                     verticalCenterOffset: Math.round(-Theme.fontSizeExtraSmall/2)
+                                 }
++                                folder: launcherFolder.model
++                                index: model.index
+                                 icon: "image://theme/icon-launcher-folder-" + (index >= 9 ? (index+1) : "0" + (index+1))
+                                 pressed: folderIcon.pressed && folderIcon.containsMouse
+                                 opacity: icon.indexOf(launcherFolder.model.iconId) !== -1 ? Theme.opacityFaint : 1.0
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml
+@@ -14,20 +14,69 @@
+ import Sailfish.AccessControl 1.0
+ import Sailfish.Lipstick 1.0
+ import "../main"
++import org.nemomobile.configuration 1.0
+ 
+ IconGridViewBase {
+     id: gridview
+ 
++	ConfigurationGroup {
++        id: launcherGridSettings
++        path: "/apps/lipstick-jolla-home-qt5/launcherGrid"
++        property int columns: 4 // Math.floor(launcherPager.width / minimumCellWidth)
++        property int rows: 6 // Math.floor(launcherPager.height / minimumCellHeight)
++        property int lcolumns: 4
++        property int lrows: 4
++        property bool editLabelVisible: true
++        property bool zoomIcons: false
++        property bool zoomFonts: false
++        property real zoomValue: 1.0
++    }
++
++    property bool isPortrait: launcherPager.height > launcherPager.width
++
++    add: Transition {
++        SequentialAnimation {
++            NumberAnimation { properties: "z"; to: -1; duration: 1 }
++            NumberAnimation { properties: "opacity"; to: 0.0; duration: 1 }
++            NumberAnimation { properties: "x,y"; duration: 1 }
++            NumberAnimation { properties: "z"; to: 0; duration: 200 }
++            NumberAnimation { properties: "opacity"; from: 0.0; to: 1.0; duration: 100 }
++        }
++    }
++    remove: Transition {
++        ParallelAnimation {
++            NumberAnimation { properties: "z"; to: -1; duration: 1 }
++            NumberAnimation { properties: "x"; to: 0; duration: 100 }
++            NumberAnimation { properties: "opacity"; to: 0.0; duration: 100 }
++        }
++    }
++    move: Transition {
++        NumberAnimation { properties: "x,y"; duration: 200 }
++    }
++    displaced: Transition {
++        NumberAnimation { properties: "x,y"; duration: 200 }
++    }
++
+     property bool launcherEditMode: removeApplicationEnabled
+     property var launcherModel: model
+     property bool rootFolder
+     property QtObject folderComponent
+-    property Item openedChildFolder
++    property Dialog openedChildFolder
++    rows: isPortrait ? launcherGridSettings.rows : launcherGridSettings.lrows
++    columns: isPortrait ? launcherGridSettings.columns : launcherGridSettings.lcolumns
++    initialCellWidth: (launcherPager.width - 2*horizontalMargin) / (columns + (isPortrait ? 0 : 1))
+     property alias reorderItem: gridManager.reorderItem
+     property alias gridManager: gridManager
+     property bool canUninstall: AccessControl.hasGroup(AccessControl.RealUid, "sailfish-system")
+     signal itemLaunched
+ 
++	onCellHeightChanged: updateHintHeight()
++    Component.onCompleted: updateHintHeight()
++
++    function updateHintHeight() {
++        Lipstick.compositor.launcherLayer.hintHeight = cellHeight
++    }
++
+     function categoryQsTrIds() {
+         //% "AudioVideo"
+         QT_TRID_NOOP("lipstick-jolla-home-folder_audiovideo")
+@@ -63,14 +112,7 @@
+             openedChildFolder.close()
+         }
+ 
+-        if (!folderComponent) {
+-            folderComponent = Qt.createComponent("LauncherFolder.qml")
+-            if (folderComponent.status == Component.Error) {
+-                console.log("Error opening folder", folderComponent.errorString())
+-                return
+-            }
+-        }
+-        openedChildFolder = folderComponent.createObject(launcherPager, { 'model': folder })
++        openedChildFolder = pageStack.push(Qt.resolvedUrl("LauncherFolder.qml"), { 'model': folder, 'launcherPager': launcherPager })
+     }
+ 
+     function setEditMode(enabled) {
+@@ -255,28 +297,30 @@
+             }
+         }
+         onReleased: {
+-            if (!rootFolder && gridview.mapFromItem(wrapper.contentItem, 0, 0).y + wrapper.height/2 > gridview.height) {
++            if (!rootFolder && gridview.mapFromItem(wrapper.contentItem, 0, 0).y + launcherIcon.size < 0) {
+                 var parentFolderIndex = launcherModel.parentFolder.indexOf(launcherModel)
+                 launcherModel.parentFolder.moveToFolder(model.object, launcherModel.parentFolder, parentFolderIndex+1)
+             }
+         }
+ 
+-        LauncherIcon {
++        FolderIconLoader {
+             id: launcherIcon
+             anchors {
+                 centerIn: parent
+                 verticalCenterOffset: Math.floor(-launcherText.height/2)
+             }
+             icon: model.object.iconId
++            folder: model.object
+             pressed: down
+             opacity: isUpdating && folderItemCount == 0 ? Theme.opacityFaint : 1.0
++            size: Theme.iconSizeLauncher * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
+             Text {
+-                font.pixelSize: Theme.fontSizeExtraLarge
++                font.pixelSize: Theme.fontSizeExtraLarge * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
+                 font.family: Theme.fontFamilyHeading
+                 text: folderItemCount > 0 ? folderItemCount : ""
+                 color: Theme.lightPrimaryColor
+                 anchors.centerIn: parent
+-                visible: !isUpdating || model.object.updatingProgress < 0 || model.object.updatingProgress > 100
++                visible: launcherIcon.index < 16 && (!launcherEditMode || isFolder || launcherGridSettings.editLabelVisible)
+                 opacity: reorderItem && folderItemCount >= 99 ? Theme.opacityLow : 1.0
+             }
+         }
+@@ -331,7 +375,7 @@
+                             && !object.isUpdating
+                             && object.readValue("X-apkd-apkfile").indexOf("/vendor/app/") != 0
+                             && object.readValue("X-apkd-apkfile").indexOf("/home/.android/vendor/app/") != 0
+-                onClicked: launcher.removeApplication(object.filePath, object.title)
++                onClicked: removeApplication(object.filePath, object.title)
+             }
+         }
+     }
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml
+@@ -10,6 +10,9 @@
+ import Sailfish.Silica 1.0
+ import Sailfish.Silica.private 1.0
+ import com.jolla.lipstick 0.1
++import org.nemomobile.configuration 1.0
++import Nemo.DBus 2.0
++import Sailfish.Silica.private 1.0 as SilicaPrivate
+ import "../main"
+ import "../backgrounds"
+ 
+@@ -22,21 +25,78 @@
+ 
+     allowedOrientations: Lipstick.compositor.topmostWindowOrientation
+ 
++    ConfigurationGroup {
++        id: launcherViewSettings
++        path: "/apps/lipstick-jolla-home-qt5/launcherView"
++        property bool glassBackground: true
++        property bool themedBackgroundColor: true
++        property real backgroundOpacity: 0.9
++    }
++ 
+     children: MenuBackground {
+         z: -1
+ 
+         anchors.fill: parent
++        opacity: launcherViewSettings.backgroundOpacity
++		Rectangle {
++            anchors.fill: parent
++            visible: !launcherViewSettings.glassBackground
++            color: launcherViewSettings.themedBackgroundColor ? Theme.highlightDimmerColor : "black"
++        }
+     }
+ 
++    property Item remorse
++    property bool removeApplicationEnabled
++
++    function removeApplication(desktopFile, title) {
++        if (!remorse) {
++            remorse = remorseComponent.createObject(pageStack.currentPage)
++        } else if (remorse.desktopFile !== "" && remorse.desktopFile !== desktopFile) {
++            remorse.removePackageByDesktopFile()
++            remorse.cancel()
++        }
++        remorse.desktopFile = desktopFile
++
++        //: Notification indicating that an application will be removed, %1 will be replaced by application name
++        //% "Uninstalling %1"
++        remorse.execute(qsTrId("lipstick-jolla-home-no-uninstalling").arg(title))
++    }
++
++    Component {
++        id: remorseComponent
++
++        RemorsePopup {
++            property string desktopFile
++
++            function removePackageByDesktopFile() {
++                if (desktopFile !== "") {
++                    installationHandler.call("removePackageByDesktopFile", desktopFile)
++                    desktopFile = ""
++                }
++            }
++
++            z: 100
++            onTriggered: removePackageByDesktopFile()
++            onCanceled: desktopFile = ""
++
++            DBusInterface {
++                id: installationHandler
++                service: "org.sailfishos.installationhandler"
++                path: "/org/sailfishos/installationhandler"
++                iface: "org.sailfishos.installationhandler"
++            }
++        }
++    }
++
+     initialPage: Component { Page {
+         id: page
+ 
+-        allowedOrientations: Orientation.All
++        allowedOrientations: Lipstick.compositor.topmostWindowOrientation
+         layer.enabled: orientationTransitionRunning
+ 
+         Launcher {
+             // We don't want the pager to resize due to keyboard being shown.
+-            height: Math.ceil(page.height + pageStack.panelSize)
++            height: page.height
+             width: parent.width
+         }
+ 
+--- a/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml
++++ b/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml
+@@ -15,6 +15,8 @@
+     property Item _pinningHint
+     readonly property bool closeFromEdge: pinned && _activePeek
+     property Item indicatorApplicationForeground
++    
++    opaque: false
+ 
+     peekFilter {
+         enabled: Lipstick.compositor.systemInitComplete

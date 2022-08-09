@@ -1,0 +1,8 @@
+{
+    "name": "Launcher Combined Patch",
+    "description": "Changes launcher grid size and adds new icon style showing folder icons",
+    "category": "homescreen",
+	"infos": {
+        "maintainer": "carmenfdezb"
+	}
+}
