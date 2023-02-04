@@ -3,7 +3,7 @@ Name:       launcher-combined
 BuildArch: noarch
 
 Summary:    Launcher Combined Patch
-Version:    1.0.0
+Version:    1.1.0
 Release:    1
 Group:      Qt/Qt
 License:    WTFPL
@@ -39,5 +39,8 @@ fi
 %{_datadir}/patchmanager/patches/%{name}
 
 %changelog
+* Fri Feb 3 2023 Carmen Fdez. B. 1.1.0-1
+- Support for SFOS 4.5.0
+
 * Sun Aug 7 2022 Carmen Fdez. B. 1.0.0-1
 - Original patch by Coderus adapted to 4.4.0.64
