@@ -450,7 +450,7 @@
  
      onEditModeChanged: {
 -        if (editMode) {
-+		if (launcherSettings.freeScroll) {
++        if (launcherSettings.freeScroll) {
 +			return
 +		}
 +		if (editMode) {
@@ -465,7 +465,7 @@
 +    VerticalScrollDecorator {
 +		flickable: launcherPager
 +		visible: launcherSettings.freeScroll && launcherSettings.useScroll && launcherPager.contentHeight > launcherPager.height
-+	}
++	} 
  
      model: ListModel {}
      delegate: Item {
@@ -477,19 +477,20 @@
 -    highlightRangeMode: ListView.StrictlyEnforceRange
 +    snapMode: launcherSettings.freeScroll ? ListView.NoSnap : ListView.SnapOneItem
 +    highlightRangeMode: launcherSettings.freeScroll ? ListView.NoHighlightRange : ListView.StrictlyEnforceRange
-     cacheBuffer: height*model.count
+     cacheBuffer: height * model.count
  
-     // Match velocity with EdgeLayer transition's 300ms (0.3s below) duration
-@@ -163,8 +179,6 @@
- 
+     // Match velocity with EdgeLayer gesture transition's 200ms (0.2s below) duration
+@@ -193,9 +209,6 @@
          LauncherGrid {
              id: launcher
+ 
 -            property Item remorse
 -            property bool removeApplicationEnabled
- 
+-
              launcherEditMode: removeApplicationEnabled && !openedChildFolder
  
-@@ -251,11 +265,13 @@
+             gridManager.onScroll: launcherPager.scroll(up)
+@@ -282,11 +295,13 @@
              Component.onCompleted: manageDummyPages()
              onContentHeightChanged: manageDummyPages()
              onLauncherEditModeChanged: manageDummyPages()
@@ -499,12 +500,12 @@
              function manageDummyPages() {
                  if (launcherPager.height > 0) {
                      // Create dummy pages to allow paging
--                    var pageCount = Math.ceil(contentHeight/launcherPager.height)
+-                    var pageCount = Math.ceil(contentHeight / launcherPager.height)
 +                    var pageCount = launcherSettings.freeScroll ? Math.ceil(count / columns) : Math.ceil(contentHeight/launcherPager.height)
                      while (launcherPager.model.count < pageCount) {
                          launcherPager.model.append({ "name": "dummy" })
                      }
-@@ -270,20 +286,6 @@
+@@ -301,20 +316,6 @@
                  target: launcher.contentItem
              }
  
@@ -524,8 +525,8 @@
 -
              ConfigurationValue {
                  id: developerModeEnabled
-                 defaultValue: false
-@@ -296,31 +298,6 @@
+ 
+@@ -328,32 +329,6 @@
                  value: launcher.cellHeight
              }
  
@@ -548,6 +549,7 @@
 -
 -                    DBusInterface {
 -                        id: installationHandler
+-
 -                        service: "org.sailfishos.installationhandler"
 -                        path: "/org/sailfishos/installationhandler"
 -                        iface: "org.sailfishos.installationhandler"
@@ -559,24 +561,28 @@
  }
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml
 +++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml
-@@ -12,42 +12,24 @@
+@@ -12,28 +12,21 @@
  import Sailfish.Lipstick 1.0
  import com.jolla.lipstick 0.1
  
 -Rectangle {
 +Dialog {
      id: launcherFolder
+ 
 +    _clickablePageIndicators: false
 +    allowedOrientations: Lipstick.compositor.topmostWindowOrientation
 +    property var launcherPager
      property alias model: launcherGrid.model
      property bool selectIcon
      property Item iconSelector
-     property int visibleRowCount: launcherGrid.rows-2
+     property int visibleRowCount: launcherGrid.rows - 2
  
 -    Connections {
 -        target: Desktop.instance.switcher
--        onAppShowInProgressChanged: if (Desktop.instance.switcher.appShowInProgress) close()
+-        onAppShowInProgressChanged: {
+-            if (Desktop.instance.switcher.appShowInProgress)
+-                close()
+-        }
 -    }
 -
 -    function close() {
@@ -589,7 +595,10 @@
 +        reject()
      }
  
-     onVisibleChanged: if (!visible) launcherFolder.close()
+     onVisibleChanged: {
+@@ -41,20 +34,6 @@
+             launcherFolder.close()
+     }
  
 -    z: 10
 -    opacity: 0.0
@@ -608,7 +617,7 @@
      Connections {
          target: Lipstick.compositor
          onDisplayOff: launcherFolder.close()
-@@ -92,7 +74,7 @@
+@@ -103,7 +82,7 @@
                  } else if (selectIcon) {
                      selectIcon = false
                  } else if (!launcherGrid.launcherEditMode) {
@@ -617,8 +626,8 @@
                  }
                  launcherGrid.setEditMode(false)
              }
-@@ -105,11 +87,13 @@
-                                      ? Screen.topCutout.height : 0
+@@ -117,11 +96,13 @@
+             property bool doubleHandle: Screen.topCutout.height > 0
  
              width: parent.width
 -            height: topPadding + launcherGrid.cellHeight - Theme.fontSizeExtraSmall/2
@@ -632,24 +641,28 @@
  
              Image {
                  anchors.horizontalCenter: parent.horizontalCenter
-@@ -117,22 +101,23 @@
+@@ -142,25 +123,25 @@
              }
  
              MouseArea {
 -                id: icon
 +                id: iconHeader
+ 
                  objectName: "LauncherFolder_icon"
 -                width: launcherGrid.cellWidth
 +                width: height
                  height: parent.height
--                x: launcherGrid.x // launcherGrid is centered in it's parent
+-                x: launcherGrid.x // launcherGrid is centered in its parent
+-
 -                LauncherIcon {
 -                    y: header.topPadding + (launcherGrid.cellHeight - height - Theme.fontSizeExtraSmall) / 2
 -                    icon: model.iconId
 -                    anchors.horizontalCenter: parent.horizontalCenter
 -                    pressed: icon.pressed && icon.containsMouse
+-
 -                    Text {
 +                x: Theme.paddingMedium
++                
 +                FolderIconLoader {
 +					id: launcherIcon
 +					folder: model
@@ -664,15 +677,11 @@
 +                        visible: launcherIcon.index < 16
                      }
                  }
-                 onClicked: {
-@@ -149,10 +134,13 @@
+ 
+@@ -178,10 +159,14 @@
  
              TextField {
                  id: titleEditor
--
--                x: icon.x + icon.width - Theme.paddingLarge
--                width: parent.width - x - icon.x
--                y: header.topPadding + (launcherGrid.cellHeight - height - Theme.fontSizeExtraSmall) / 2
 +                anchors {
 +                    left: iconHeader.right
 +                    leftMargin: -Theme.paddingLarge
@@ -680,10 +689,14 @@
 +                    verticalCenter: parent.verticalCenter
 +                }
 +                autoScrollEnabled: false
+ 
+-                x: icon.x + icon.width - Theme.paddingLarge
+-                width: parent.width - x - icon.x
+-                y: header.topPadding + (launcherGrid.cellHeight - height - Theme.fontSizeExtraSmall) / 2
                  font.pixelSize: Theme.fontSizeExtraLarge
                  font.family: Theme.fontFamilyHeading
                  text: model.title
-@@ -181,8 +169,8 @@
+@@ -211,8 +196,8 @@
                  anchors {
                      right: titleEditor.right
                      rightMargin: Theme.horizontalPageMargin
@@ -694,7 +707,7 @@
                  }
                  font.pixelSize: Theme.fontSizeSmall
                  color: Theme.highlightColor
-@@ -199,8 +187,8 @@
+@@ -229,8 +214,8 @@
              // Use a clipper item to clip slightly outside the GridView area
              anchors.top: header.bottom
              width: parent.width
@@ -705,15 +718,29 @@
  
              LauncherGrid {
                  id: launcherGrid
-@@ -215,7 +203,6 @@
+@@ -246,12 +231,11 @@
                  }
  
                  gridManager.dragContainer: launcherFolder
 -                onItemLaunched: launcherFolder.close()
+                 header: null
+                 y: Theme.fontSizeExtraSmall/2
+                 topMargin: 0
+                 bottomMargin: 0
+-                height: visibleRowCount >= 2 ? cellHeight * visibleRowCount
++                height: visibleRowCount >= 2 ? launcherFolder.height - header.height
+                                              : Math.round(cellHeight * 1.5)
+                 cacheBuffer: height
+                 displayMarginBeginning: Theme.fontSizeExtraSmall/2
+@@ -259,6 +243,7 @@
+                 enabled: !titleEditor.activeFocus && !selectIcon
+                 Behavior on opacity { FadeAnimation { duration: 300 } }
+                 opacity: enabled ? 1.0 : (selectIcon ? 0.0 : Theme.opacityLow)
++                footer: Item { width: 1; height: Theme.paddingSmall}
  
                  NumberAnimation {
                      id: contentYAnimation
-@@ -238,20 +225,20 @@
+@@ -283,14 +268,14 @@
                              } else if (selectIcon) {
                                  selectIcon = false
                              } else if (!launcherGrid.launcherEditMode) {
@@ -727,25 +754,10 @@
  
 -                VerticalScrollDecorator {}
 +                VerticalScrollDecorator { anchors.rightMargin: -launcherGrid.x }
- 
-                 header: null
-                 y: Theme.fontSizeExtraSmall/2
-                 topMargin: 0
-                 bottomMargin: 0
--                height: visibleRowCount >= 2 ? cellHeight * visibleRowCount
-+                height: visibleRowCount >= 2 ? launcherFolder.height - header.height
-                                              : Math.round(cellHeight * 1.5)
-                 cacheBuffer: height
-                 displayMarginBeginning: Theme.fontSizeExtraSmall/2
-@@ -259,6 +246,7 @@
-                 enabled: !titleEditor.activeFocus && !selectIcon
-                 Behavior on opacity { FadeAnimation { duration: 300 } }
-                 opacity: enabled ? 1.0 : (selectIcon ? 0.0 : Theme.opacityLow)
-+                footer: Item { width: 1; height: Theme.paddingSmall}
              }
          }
  
-@@ -269,8 +257,8 @@
+@@ -302,8 +287,8 @@
                  if (item) {
                      // The odd launcherGrid.reorderItem.y line below is to force revaluation of this binding
                      launcherGrid.reorderItem.y
@@ -756,7 +768,7 @@
                          return true
                  }
                  return false
-@@ -279,14 +267,12 @@
+@@ -312,15 +297,12 @@
                                    || model.itemCount > launcherGrid.columns * visibleRowCount)
                                   && !selectIcon
  
@@ -767,44 +779,48 @@
 -            y: parent.height - (shown ? height : 0)
 -            Behavior on y { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
 +            y: 0
-             opacity: launcherGrid.launcherEditMode && launcherGrid.reorderItem ?
--                         (draggedIntoFooter ? 1.0 : Theme.opacityHigh) :
--                         (model.itemCount > launcherGrid.columns * visibleRowCount && shown ? Theme.opacityHigh : 0.0)
-+                         (draggedIntoFooter ? 1.0 : 0.8) : 0.0
+             opacity: launcherGrid.launcherEditMode && launcherGrid.reorderItem
+-                     ? (draggedIntoFooter ? 1.0 : Theme.opacityHigh)
+-                     : (model.itemCount > launcherGrid.columns * visibleRowCount && shown
+-                        ? Theme.opacityHigh : 0.0)
++                     ? (draggedIntoFooter ? 1.0 : 0.8) : 0.0
              Behavior on opacity { FadeAnimation {} }
              color: Theme.highlightDimmerColor
              gradient: Gradient {
-@@ -337,18 +323,19 @@
-                     id: folderIconGrid
+@@ -374,21 +356,22 @@
+ 
                      columns: Math.floor(launcherGrid.width/launcherGrid.cellWidth)
                      Repeater {
 -                        model: 16
 +                        model: 20
                          delegate: MouseArea {
                              id: folderIcon
+ 
 -                            objectName: "LauncherFolder_folderIcon"
                              width: launcherGrid.cellWidth
                              height: launcherGrid.cellHeight
+ 
 -                            LauncherIcon {
 +                            FolderIconLoader {
                                  id: folderLauncherIcon
+ 
                                  anchors {
                                      centerIn: parent
                                      verticalCenterOffset: Math.round(-Theme.fontSizeExtraSmall/2)
-                                 }
+-                                }
++                                }                                
 +                                folder: launcherFolder.model
 +                                index: model.index
-                                 icon: "image://theme/icon-launcher-folder-" + (index >= 9 ? (index+1) : "0" + (index+1))
+                                 icon: "image://theme/icon-launcher-folder-" + (index >= 9 ? (index + 1)
+                                                                                           : "0" + (index + 1))
                                  pressed: folderIcon.pressed && folderIcon.containsMouse
-                                 opacity: icon.indexOf(launcherFolder.model.iconId) !== -1 ? Theme.opacityFaint : 1.0
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml
 +++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml
-@@ -18,12 +18,53 @@
- 
+@@ -20,11 +20,52 @@
  IconGridViewBase {
      id: gridview
-+    
-+    ConfigurationGroup {
+ 
++        ConfigurationGroup {
 +        id: launcherGridSettings
 +        path: "/apps/lipstick-jolla-home-qt5/launcherGrid"
 +        property int columns: 4 // Math.floor(launcherPager.width / minimumCellWidth)
@@ -818,7 +834,7 @@
 +    }
 + 
 +    property bool isPortrait: launcherPager.height > launcherPager.width
- 
++
 +    add: Transition {
 +        SequentialAnimation {
 +            NumberAnimation { properties: "z"; to: -1; duration: 1 }
@@ -841,7 +857,7 @@
 +    displaced: Transition {
 +        NumberAnimation { properties: "x,y"; duration: 200 }
 +    }
-+
++    
      property bool launcherEditMode: removeApplicationEnabled
      property var launcherModel: model
      property bool rootFolder
@@ -854,8 +870,8 @@
      property alias reorderItem: gridManager.reorderItem
      property alias gridManager: gridManager
      property bool canUninstall: AccessControl.hasGroup(AccessControl.RealUid, "sailfish-system")
-@@ -44,7 +85,15 @@
-     }
+@@ -48,6 +89,13 @@
+     property bool reserveFirstRow: launcherClockConfig.launcher_clock_visible
  
      signal itemLaunched
 +    
@@ -866,11 +882,9 @@
 +        Lipstick.compositor.launcherLayer.hintHeight = cellHeight
 +    }
  
-+
      function categoryQsTrIds() {
          //% "AudioVideo"
-         QT_TRID_NOOP("lipstick-jolla-home-folder_audiovideo")
-@@ -80,14 +129,7 @@
+@@ -84,14 +132,7 @@
              openedChildFolder.close()
          }
  
@@ -886,7 +900,7 @@
      }
  
      function setEditMode(enabled) {
-@@ -360,28 +402,30 @@
+@@ -409,13 +450,13 @@
              }
          }
          onReleased: {
@@ -900,15 +914,17 @@
 -        LauncherIcon {
 +        FolderIconLoader {
              id: launcherIcon
+ 
              anchors {
-                 centerIn: parent
-                 verticalCenterOffset: Math.floor(-launcherText.height/2)
+@@ -423,16 +464,18 @@
+                 verticalCenterOffset: Math.floor(-launcherText.height / 2)
              }
              icon: model.object.iconId
 +            folder: model.object
              pressed: down
              opacity: isUpdating && folderItemCount == 0 ? Theme.opacityFaint : 1.0
 +            size: Theme.iconSizeLauncher * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
+ 
              Text {
 -                font.pixelSize: Theme.fontSizeExtraLarge
 +                font.pixelSize: Theme.fontSizeExtraLarge * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
@@ -921,10 +937,10 @@
                  opacity: reorderItem && folderItemCount >= 99 ? Theme.opacityLow : 1.0
              }
          }
-@@ -437,7 +481,7 @@
+@@ -489,7 +532,7 @@
+                             && !isFolder
+                             && AppControl.isUninstallable(object.filePath)
                              && !object.isUpdating
-                             && object.readValue("X-apkd-apkfile").indexOf("/vendor/app/") != 0
-                             && object.readValue("X-apkd-apkfile").indexOf("/home/.android/vendor/app/") != 0
 -                onClicked: launcher.removeApplication(object.filePath, object.title)
 +                onClicked: removeApplication(object.filePath, object.title)
              }
@@ -946,7 +962,7 @@
  
  ApplicationWindow {
      id: launcherWindow
-@@ -20,18 +23,81 @@
+@@ -20,19 +23,83 @@
  //    enabled: !Lipstick.compositor.deviceIsLocked
  
      allowedOrientations: Lipstick.compositor.topmostWindowOrientation
@@ -970,7 +986,7 @@
 +            color: launcherViewSettings.themedBackgroundColor ? Theme.highlightDimmerColor : "black"
 +        }
 +    }
- 
++ 
 +    property Item remorse
 +    property bool removeApplicationEnabled
 +
@@ -1013,7 +1029,9 @@
 +            }
 +        }
 +    }
-+
++    
+     defaultPageCutoutMode: CutoutMode.FullScreen
+ 
      initialPage: Component { Page {
          id: page
  
