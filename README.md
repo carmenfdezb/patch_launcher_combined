@@ -10,3 +10,8 @@ If you like, you can contribute to the translation of this patch via the [Weblat
 <a href="https://hosted.weblate.org/engage/patch_launcher_combined/">
 <img src="https://hosted.weblate.org/widget/patch_launcher_combined/multi-auto.svg" alt="Estado de la traducción" />
 </a>
+
+## Credits
+[Coderus](https://github.com/coderus): develop this patch.
+
+[Frank Paul Silye](https://github.com/fsilye): translation to Norwegian bokmål.
