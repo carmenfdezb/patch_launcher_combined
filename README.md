@@ -15,3 +15,5 @@ If you like, you can contribute to the translation of this patch via the [Weblat
 [Coderus](https://github.com/coderus): develop this patch.
 
 [Frank Paul Silye](https://github.com/fsilye): translation to Norwegian bokmål.
+
+[Åke Engelbrektson](https://github.com/eson57): translation to Swedish language.
