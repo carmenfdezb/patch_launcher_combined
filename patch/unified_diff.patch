@@ -900,14 +900,17 @@
      }
  
      function setEditMode(enabled) {
-@@ -409,13 +450,13 @@
-             }
+@@ -404,8 +445,7 @@
          }
+ 
          onReleased: {
--            if (!rootFolder && gridview.mapFromItem(wrapper.contentItem, 0, 0).y + wrapper.height/2 > gridview.height) {
+-            if (!rootFolder
+-                    && gridview.mapFromItem(wrapper.contentItem, 0, 0).y + wrapper.height/2 > gridview.height) {
 +            if (!rootFolder && gridview.mapFromItem(wrapper.contentItem, 0, 0).y + launcherIcon.size < 0) {
                  var parentFolderIndex = launcherModel.parentFolder.indexOf(launcherModel)
-                 launcherModel.parentFolder.moveToFolder(model.object, launcherModel.parentFolder, parentFolderIndex+1)
+                 launcherModel.parentFolder.moveToFolder(model.object, launcherModel.parentFolder,
+                                                         parentFolderIndex + 1)
+@@ -435,7 +475,7 @@
              }
          }
  
@@ -916,13 +919,14 @@
              id: launcherIcon
  
              anchors {
-@@ -423,16 +464,18 @@
+@@ -443,17 +483,19 @@
                  verticalCenterOffset: Math.floor(-launcherText.height / 2)
              }
              icon: model.object.iconId
 +            folder: model.object
              pressed: down
-             opacity: isUpdating && folderItemCount == 0 ? Theme.opacityFaint : 1.0
+             opacity: isUpdating && folderItemCount == 0 ? Theme.opacityFaint
+                                                         : wrapper.itemOpacity
 +            size: Theme.iconSizeLauncher * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
  
              Text {
@@ -937,7 +941,7 @@
                  opacity: reorderItem && folderItemCount >= 99 ? Theme.opacityLow : 1.0
              }
          }
-@@ -489,7 +532,7 @@
+@@ -511,7 +553,7 @@
                              && !isFolder
                              && AppControl.isUninstallable(object.filePath)
                              && !object.isUpdating
