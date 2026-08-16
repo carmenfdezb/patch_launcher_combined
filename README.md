@@ -14,6 +14,8 @@ If you like, you can contribute to the translation of this patch via the [Weblat
 ## Credits
 [Coderus](https://github.com/coderus): develop this patch.
 
+[a-dekker](https://github.com/a-dekker): support for SFOS 5.2.
+
 [Frank Paul Silye](https://github.com/fsilye): translation to Norwegian bokmål.
 
 [Åke Engelbrektson](https://github.com/eson57): translation to Swedish language.
