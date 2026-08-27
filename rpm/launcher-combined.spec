@@ -3,7 +3,7 @@ Name:       launcher-combined
 BuildArch: noarch
 
 Summary:    Launcher Combined Patch
-Version:    1.4.1
+Version:    1.4.2
 Release:    1
 Group:      Qt/Qt
 License:    WTFPL
@@ -39,6 +39,9 @@ fi
 %{_datadir}/patchmanager/patches/%{name}
 
 %changelog
+* Mon Aug 27 2026 Carmen Fdez. B. 1.4.2-1
+- Added Dutch translation
+
 * Mon Aug 17 2026 Carmen Fdez. B. 1.4.1-1
 - Added French translation
 
