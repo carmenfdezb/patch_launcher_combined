@@ -3,7 +3,7 @@ Name:       launcher-combined
 BuildArch: noarch
 
 Summary:    Launcher Combined Patch
-Version:    1.4.2
+Version:    1.5.0
 Release:    1
 Group:      Qt/Qt
 License:    WTFPL
@@ -39,6 +39,9 @@ fi
 %{_datadir}/patchmanager/patches/%{name}
 
 %changelog
+* Wed Sep 30 2026 Carmen Fdez. B. 1.5.0-1
+- Support for sfos 5.2.0.18
+
 * Mon Aug 27 2026 Carmen Fdez. B. 1.4.2-1
 - Added Dutch translation
 
@@ -55,10 +58,10 @@ fi
 - Added Norwegian bokmål translation
 
 * Sat Feb 01 2025 Carmen Fdez. B. 1.3.0-1
--Support for SFOS 5
+- Support for SFOS 5
 
 * Sat May 25 2024 Carmen Fdez. B. 1.2.0-1
--Support for SFOS 4.6
+- Support for SFOS 4.6
 
 * Fri Feb 03 2023 Carmen Fdez. B. 1.1.0-1
 - Support for SFOS 4.5.0
