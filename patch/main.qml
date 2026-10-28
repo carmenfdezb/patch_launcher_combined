@@ -6,8 +6,8 @@ Page {
     id: page
 
     ConfigurationGroup {
-        id: launcherViewSettings
-        path: "/apps/lipstick-jolla-home-qt5/launcherView"
+        id: launcherLayerSettings
+        path: "/apps/lipstick-jolla-home-qt5/launcherLayer"
         property bool glassBackground: true
         property bool themedBackgroundColor: true
         property real backgroundOpacity: 0.9
@@ -163,16 +163,16 @@ Page {
             TextSwitch {
                 width: parent.width
                 text: qsTr("Use themed background")
-                checked: launcherViewSettings.glassBackground
-                onClicked: launcherViewSettings.glassBackground = checked
+                checked: launcherLayerSettings.glassBackground
+                onClicked: launcherLayerSettings.glassBackground = checked
             }
 
             TextSwitch {
-                visible: !launcherViewSettings.glassBackground
+                visible: !launcherLayerSettings.glassBackground
                 width: parent.width
                 text: qsTr("Use system color background")
-                checked: launcherViewSettings.themedBackgroundColor
-                onClicked: launcherViewSettings.themedBackgroundColor = checked
+                checked: launcherLayerSettings.themedBackgroundColor
+                onClicked: launcherLayerSettings.themedBackgroundColor = checked
             }
 
             Slider {
@@ -181,10 +181,10 @@ Page {
                 maximumValue: 100
                 minimumValue: 0
                 stepSize: 1
-                value: launcherViewSettings.backgroundOpacity * 100
+                value: launcherLayerSettings.backgroundOpacity * 100
                 valueText: parseInt(value) + "%"
 
-                onValueChanged: launcherViewSettings.backgroundOpacity = value / 100.0
+                onValueChanged: launcherLayerSettings.backgroundOpacity = value / 100.0
             }
         }
     }
