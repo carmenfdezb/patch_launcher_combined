@@ -23,3 +23,5 @@ If you like, you can contribute to the translation of this patch via the [Weblat
 [Jerome M](https://hosted.weblate.org/user/Mkz_/): translation to French language.
 
 [Nathan](https://hosted.weblate.org/user/02947b5yh/): translation to Dutch language.
+
+[Priit Jõerüüt](https://hosted.weblate.org/user/jrthwlate/): translation to Estonian language.

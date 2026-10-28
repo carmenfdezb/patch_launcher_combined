@@ -3,7 +3,7 @@ Name:       launcher-combined
 BuildArch: noarch
 
 Summary:    Launcher Combined Patch
-Version:    1.5.0
+Version:    1.6.0
 Release:    1
 Group:      Qt/Qt
 License:    WTFPL
@@ -39,10 +39,14 @@ fi
 %{_datadir}/patchmanager/patches/%{name}
 
 %changelog
+* Wed Oct 28 2026 Carmen Fdez. B. 1.6.0-1
+- Fixed the background opacity option
+- Added Estonian translation
+
 * Wed Sep 30 2026 Carmen Fdez. B. 1.5.0-1
 - Support for sfos 5.2.0.18
 
-* Mon Aug 27 2026 Carmen Fdez. B. 1.4.2-1
+* Thu Aug 27 2026 Carmen Fdez. B. 1.4.2-1
 - Added Dutch translation
 
 * Mon Aug 17 2026 Carmen Fdez. B. 1.4.1-1
