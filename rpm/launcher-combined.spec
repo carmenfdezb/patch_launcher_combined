@@ -3,7 +3,7 @@ Name:       launcher-combined
 BuildArch: noarch
 
 Summary:    Launcher Combined Patch
-Version:    1.6.0
+Version:    1.7.2
 Release:    1
 Group:      Qt/Qt
 License:    WTFPL
@@ -39,6 +39,11 @@ fi
 %{_datadir}/patchmanager/patches/%{name}
 
 %changelog
+* Tue Nov 10 2026 Carmen Fdez. B. 1.7.2-1
+- Fixed application name font sizing
+- Added an option to apply changes to the App Grid in Settings (thanks to @rdomschk for the suggestion and help)
+- Added German translation (thanks to @rdomschk)
+
 * Wed Oct 28 2026 Carmen Fdez. B. 1.6.0-1
 - Fixed the background opacity option
 - Added Estonian translation
