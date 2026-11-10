@@ -32,6 +32,12 @@ Page {
         property bool freeScroll: true
         property bool useScroll: true
     }
+    
+    ConfigurationGroup {
+        id: appGridSettings
+        path: "/apps/jolla-settings/applicationsPage"
+        property bool applicationsSettings: false
+    }
 
     SilicaFlickable {
         anchors.fill: parent
@@ -185,6 +191,17 @@ Page {
                 valueText: parseInt(value) + "%"
 
                 onValueChanged: launcherLayerSettings.backgroundOpacity = value / 100.0
+            }
+            
+            SectionHeader {
+                text: qsTr("AppGrid in Settings")
+            }
+            
+            TextSwitch {
+                width: parent.width
+                text: qsTr("Apply changes in AppGrid Settings")
+                checked: appGridSettings.applicationsSettings
+                onClicked: appGridSettings.applicationsSettings = checked
             }
         }
     }

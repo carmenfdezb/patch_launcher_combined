@@ -1,6 +1,147 @@
+diff -Nur a/usr/share/jolla-settings/pages/ApplicationsGrid.qml b/usr/share/jolla-settings/pages/ApplicationsGrid.qml
+--- a/usr/share/jolla-settings/pages/ApplicationsGrid.qml	2026-11-07 20:18:31.800008634 +0100
++++ b/usr/share/jolla-settings/pages/ApplicationsGrid.qml	2026-11-10 19:38:35.934649516 +0100
+@@ -9,9 +9,47 @@
+ import Sailfish.Silica 1.0
+ import Sailfish.Lipstick 1.0
+ import com.jolla.settings 1.0
++import Nemo.Configuration 1.0
+ 
+ Item {
+     id: root
++    
++    ConfigurationGroup {
++        id: appGridSettings
++        path: "/apps/jolla-settings/applicationsPage"
++        property bool applicationsSettings: false
++    }
++    
++    ConfigurationGroup {
++        id: launcherGridSettings
++        path: "/apps/lipstick-jolla-home-qt5/launcherGrid"
++        
++        property int columns: 4
++        property int rows: 6
++        property int lcolumns: 4
++        property int lrows: 4
++        property bool zoomIcons: false
++        property bool zoomFonts: false
++        property real zoomValue: 1.0
++    }
++    
++    Binding {
++        target: gridView
++        property: "rows"
++        when: appGridSettings.applicationsSettings
++        value: pageStack.currentPage.isPortrait
++               ? launcherGridSettings.rows
++               : launcherGridSettings.lrows
++    }
++
++    Binding {
++        target: gridView
++        property: "columns"
++        when: appGridSettings.applicationsSettings
++        value: pageStack.currentPage.isPortrait
++               ? launcherGridSettings.columns
++               : launcherGridSettings.lcolumns
++    }
+ 
+     property alias gridView: gridView
+     property bool sectionHeaderVisible: true
+@@ -105,8 +143,16 @@
+             width: appItem.width
+             height: appItem.height
+ 
+-            LauncherGridItem {
++            MyLauncherGridItem {
+                 id: appItem
++                
++                iconScale: appGridSettings.applicationsSettings
++                && launcherGridSettings.zoomIcons
++                ? launcherGridSettings.zoomValue : 1.0
++                
++                fontScale: appGridSettings.applicationsSettings
++                && launcherGridSettings.zoomFonts
++                ? launcherGridSettings.zoomValue : 1.0
+ 
+                 property bool configurable: !!model.section
+                                             && ((model.section.count(1) > 0)
+@@ -118,7 +164,7 @@
+                 enabled: configurable || model.sandboxed || model.androidApp
+                 icon: model.iconId
+                 text: model.name
+-
++                
+                 onClicked: {
+                     if (model.sandboxed) {
+                         root.openSandboxed(text, model.section, model.iconId, model.filePath,
+diff -Nur a/usr/share/jolla-settings/pages/MyLauncherGridItem.qml b/usr/share/jolla-settings/pages/MyLauncherGridItem.qml
+--- a/usr/share/jolla-settings/pages/MyLauncherGridItem.qml	1970-01-01 01:00:00.000000000 +0100
++++ b/usr/share/jolla-settings/pages/MyLauncherGridItem.qml	2026-11-09 22:07:33.890595217 +0100
+@@ -0,0 +1,59 @@
++import QtQuick 2.6
++import Sailfish.Silica 1.0
++import com.jolla.settings 1.0
++import Sailfish.Lipstick 1.0
++
++MouseArea {
++    id: appItem
++
++    property alias icon: appIcon.icon
++    property alias iconStatus: appIcon.status
++    property alias text: appTitle.text
++    property alias textColor: appTitle.color
++    property alias maximumLineCount: appTitle.maximumLineCount
++    property alias wrapMode: appTitle.wrapMode
++
++    property real iconScale: 1.0
++    property real fontScale: 1.0
++
++    property bool down: pressed && containsMouse
++    property bool highlighted: down
++    property alias topPadding: appIcon.y
++
++    objectName: "MyLauncherGridItem"
++
++    implicitHeight: appIcon.height + appTitle.height
++
++    LauncherIcon {
++        id: appIcon
++
++        size: Theme.iconSizeLauncher * appItem.iconScale
++
++        y: Math.round((parent.height - (height + appTitle.height)) / 2)
++        anchors.horizontalCenter: parent.horizontalCenter
++        opacity: appItem.enabled ? 1 : Theme.opacityFaint
++        pressed: highlighted
++        icon: launcher ? launcher.iconId : ""
++    }
++
++    Text {
++        id: appTitle
++
++        anchors {
++            top: appIcon.bottom
++            topMargin: Theme.paddingSmall
++            left: parent.left
++            right: parent.right
++        }
++
++        horizontalAlignment: Text.AlignHCenter
++        opacity: appItem.enabled ? 1 : Theme.opacityFaint
++
++        font.pixelSize: Theme.fontSizeTiny * appItem.fontScale
++
++        elide: Text.ElideRight
++        textFormat: Text.PlainText
++        color: highlighted ? Theme.highlightColor : Theme.primaryColor
++        text: launcher ? launcher.title : ""
++    }
++}
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml	2026-10-28 19:22:01.906671625 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml	2022-08-09 14:54:51.793239800 +0200
 @@ -0,0 +1,109 @@
 +import QtQuick 2.0
 +import Sailfish.Silica 1.0
@@ -113,7 +254,7 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconBigGrid.qml b/u
 +}
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml	2026-10-28 19:22:01.907671710 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml	2022-08-09 14:57:36.779065300 +0200
 @@ -0,0 +1,48 @@
 +import QtQuick 2.0
 +import Sailfish.Silica 1.0
@@ -165,7 +306,7 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconCascade.qml b/u
 +}
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml	2026-10-28 19:22:01.918672653 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml	2022-08-09 15:00:48.670699300 +0200
 @@ -0,0 +1,61 @@
 +import QtQuick 2.0
 +import Sailfish.Silica 1.0
@@ -230,7 +371,7 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconGrid.qml b/usr/
 +}
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml	2026-10-28 19:22:01.919672738 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml	2024-05-25 15:24:51.546428900 +0200
 @@ -0,0 +1,128 @@
 +import QtQuick 2.0
 +import org.nemomobile.lipstick 0.1
@@ -362,7 +503,7 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconLoader.qml b/us
 +}
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml
 --- a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml	2026-10-28 19:22:01.920672824 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml	2022-08-09 15:05:15.679798600 +0200
 @@ -0,0 +1,69 @@
 +import QtQuick 2.0
 +import Sailfish.Silica 1.0
@@ -434,8 +575,8 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/FolderIconStack.qml b/usr
 +    }
 +}
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml
---- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml	2026-10-28 19:22:01.898670939 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml	2026-10-28 19:22:01.923673081 +0100
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml	2026-11-07 20:15:29.218296817 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml	2026-09-30 17:58:22.227255442 +0200
 @@ -12,28 +12,21 @@
  import Sailfish.Lipstick 1.0
  import com.jolla.lipstick 0.1
@@ -687,8 +828,8 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherFolder.qml b/usr/
                                                                                            : "0" + (index + 1))
                                  pressed: folderIcon.pressed && folderIcon.containsMouse
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml
---- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml	2026-10-28 19:22:01.902671282 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml	2026-10-28 19:22:01.924673166 +0100
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml	2026-11-07 20:15:29.256296341 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml	2026-11-10 18:44:06.063001997 +0100
 @@ -19,12 +19,53 @@
  
  IconGridViewBase {
@@ -806,8 +947,7 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml b/usr/sh
 +            size: Theme.iconSizeLauncher * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
 +            
              Text {
--                font.pixelSize: Theme.fontSizeExtraLarge
-+                font.pixelSize: Theme.fontSizeExtraLarge * (launcherGridSettings.zoomIcons ? launcherGridSettings.zoomValue : 1.0)
+                 font.pixelSize: Theme.fontSizeExtraLarge
                  font.family: Theme.fontFamilyHeading
                  text: folderItemCount > 0 ? folderItemCount : ""
                  color: Theme.lightPrimaryColor
@@ -817,6 +957,15 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml b/usr/sh
                  opacity: reorderItem && folderItemCount >= 99 ? Theme.opacityLow : 1.0
              }
          }
+@@ -474,7 +515,7 @@
+             truncationMode: TruncationMode.Fade
+ 
+             color: down ? Theme.highlightColor : Theme.primaryColor
+-            font.pixelSize: gridview.launcherLabelFontSize
++            font.pixelSize: gridview.launcherLabelFontSize * (launcherGridSettings.zoomFonts ? launcherGridSettings.zoomValue : 1.0)
+             text: object.title.replace(/\n|\r/g, " ")
+             textFormat: Text.PlainText
+             opacity: wrapper.itemOpacity
 @@ -515,7 +556,7 @@
                              && AppControl.isUninstallable(object.filePath)
                              && !object.isUpdating
@@ -827,8 +976,8 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherGrid.qml b/usr/sh
          }
      }
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml b/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml
---- a/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml	2026-10-28 19:22:01.896670768 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml	2026-10-28 19:22:01.922672995 +0100
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml	2026-11-07 20:15:29.218296817 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml	2026-09-30 17:33:48.520662306 +0200
 @@ -18,6 +18,14 @@
  
  SilicaListView {
@@ -959,8 +1108,8 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/Launcher.qml b/usr/share/
      }
  }
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml
---- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml	2026-10-28 19:22:01.903671368 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml	2026-10-28 19:22:01.925673252 +0100
+--- a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml	2026-11-07 20:15:29.256296341 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml	2026-10-28 18:11:56.502120965 +0100
 @@ -8,8 +8,9 @@
  import QtQuick 2.6
  import org.nemomobile.lipstick 0.1
@@ -1039,8 +1188,8 @@ diff -Nur a/usr/share/lipstick-jolla-home-qt5/launcher/LauncherView.qml b/usr/sh
          }
  
 diff -Nur a/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml b/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml
---- a/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml	2026-10-28 19:22:01.905671539 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml	2026-10-28 19:22:01.925673252 +0100
+--- a/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml	2026-11-07 20:16:03.411868290 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/layers/LauncherLayer.qml	2026-10-28 19:18:16.591111735 +0100
 @@ -2,6 +2,7 @@
  import Sailfish.Silica 1.0
  import Sailfish.Lipstick 1.0
