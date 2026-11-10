@@ -1,89 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de">
+<TS version="2.1" language="de_DE">
 <context>
     <name>main</name>
     <message>
-        <location filename="../patch/main.qml" line="48"/>
-        <source>Launcher settings</source>
-        <translation>Launcher Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="52"/>
-        <source>Grid portrait</source>
-        <translation>App Grid Hochformat</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="57"/>
-        <location filename="../patch/main.qml" line="85"/>
-        <source>Columns count</source>
-        <translation>Spalten Anzahl</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="69"/>
-        <location filename="../patch/main.qml" line="97"/>
-        <source>Rows count</source>
-        <translation>Reihen Anzahl</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="80"/>
-        <source>Grid landscape</source>
-        <translation>App Grid im Querformat</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="108"/>
-        <source>Common</source>
-        <translation>Allgemein</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="113"/>
-        <source>Change font size</source>
-        <translation>Schriftgröße anpassen</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="120"/>
-        <source>Change icons size</source>
-        <translation>Icon Größe ändern</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="127"/>
-        <source>Zoom value</source>
-        <translation>Zoomwert</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="139"/>
         <source>Show labels in edit mode</source>
         <translation>Zeige Texte im Änderungsmodus</translation>
     </message>
     <message>
-        <location filename="../patch/main.qml" line="146"/>
-        <source>Scroll without pages</source>
-        <translation>Scrollen Sie ohne Seiten</translation>
+        <source>Change font size</source>
+        <translation>Schriftgröße anpassen</translation>
     </message>
     <message>
-        <location filename="../patch/main.qml" line="153"/>
-        <source>Show scrollbar</source>
-        <translation>Scrollbar anzeigen</translation>
-    </message>
-    <message>
-        <location filename="../patch/main.qml" line="160"/>
         <source>Background</source>
         <translation>Hintergrund</translation>
     </message>
     <message>
-        <location filename="../patch/main.qml" line="165"/>
-        <source>Use themed background</source>
-        <translation>Theme Hintergrund verwenden</translation>
+        <source>Common</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../patch/main.qml" line="173"/>
+        <source>Launcher settings</source>
+        <translation>Launcher Einstellungen</translation>
+    </message>
+    <message>
+        <source>Rows count</source>
+        <translation>Reihen Anzahl</translation>
+    </message>
+    <message>
+        <source>Grid portrait</source>
+        <translation>App Grid Hochformat</translation>
+    </message>
+    <message>
+        <source>Show scrollbar</source>
+        <translation>Scrollbar anzeigen</translation>
+    </message>
+    <message>
+        <source>Change icons size</source>
+        <translation>Icon Größe ändern</translation>
+    </message>
+    <message>
         <source>Use system color background</source>
         <translation>Systemfarbe als Hintergrundfarbe verwenden</translation>
     </message>
     <message>
-        <location filename="../patch/main.qml" line="180"/>
         <source>Background opacity</source>
         <translation>Hintergrund Transparenz</translation>
+    </message>
+    <message>
+        <source>Grid landscape</source>
+        <translation>App Grid im Querformat</translation>
+    </message>
+    <message>
+        <source>Use themed background</source>
+        <translation>Theme Hintergrund verwenden</translation>
+    </message>
+    <message>
+        <source>Scroll without pages</source>
+        <translation>Scrollen Sie ohne Seiten</translation>
+    </message>
+    <message>
+        <source>Columns count</source>
+        <translation>Spalten Anzahl</translation>
+    </message>
+    <message>
+        <source>Zoom value</source>
+        <translation>Zoomwert</translation>
+    </message>
+    <message>
+        <source>AppGrid in Settings</source>
+        <translation>App Grid in Einstellungen</translation>
+    </message>
+    <message>
+        <source>Apply changes in AppGrid Settings</source>
+        <translation>App Grid in Einstellungen mit ändern</translation>
     </message>
 </context>
 </TS>
