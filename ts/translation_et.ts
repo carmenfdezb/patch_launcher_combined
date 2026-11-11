@@ -88,12 +88,12 @@
     <message>
         <location filename="../patch/main.qml" line="197"/>
         <source>AppGrid in Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Rakenduste ruudustik seadistustes</translation>
     </message>
     <message>
         <location filename="../patch/main.qml" line="202"/>
         <source>Apply changes in AppGrid Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Võta rakenduste ruudustiku seadistuste muudatused kasutusele</translation>
     </message>
 </context>
 </TS>
