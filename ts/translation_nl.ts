@@ -88,12 +88,12 @@
     <message>
         <location filename="../patch/main.qml" line="197"/>
         <source>AppGrid in Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Approoster in Instellingen</translation>
     </message>
     <message>
         <location filename="../patch/main.qml" line="202"/>
         <source>Apply changes in AppGrid Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzigingen toepassen in approosterinstellingen</translation>
     </message>
 </context>
 </TS>
